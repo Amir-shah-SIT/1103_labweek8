@@ -25,23 +25,24 @@ class inventory:
     def __init__(self):
         self.__TotalInvetory = []
 
+    @property
+    def viewinventory(self):
+        return self.__TotalInvetory
+    
     def add_product(self,product):
         self.__TotalInvetory.append(product)
         
 
     def search_product(self,productid):
-        targetProduct = next((item for item in self.__TotalInvetory if item.produdtID == productid), None)
-        if targetProduct != None :
-            return targetProduct
-        else:
-            print("No product exists")
+        targetProduct = next((item for item in self.__TotalInvetory if item.productID == productid), None)
+        return targetProduct
 
     def display_all(self):
         for each in self.__TotalInvetory:
             each.display_information()
 
 #Where functions are declared
-def add_product():
+def add_product(inventoryvariable):
     print("Add New Product")
     productIDinput = input("Product ID:").upper()
     productNameinput = input("Product Name: ")
@@ -58,7 +59,7 @@ def add_product():
         except ValueError:
             print("Enter only a integer.")
     newProduct = Products(productIDinput,productNameinput,productPriceinput,productStockinput)
-    inventory[productIDinput] = newProduct
+    inventoryvariable.add_product(newProduct)
 
     return
 
@@ -87,41 +88,48 @@ def mainMenuOptions():
             print("please only enter a number between 1-6.")
 
 def load_inventory():
+    newInventory = inventory()
     try:
         with open('inventory.json', 'r', encoding='utf-8') as file:
             print("Inventory.json found.")
             print("Inventory loaded successfully.")
             loadedinventory = json.load(file)
-            for Value in load_inventory:
-                loadProduct = Products(Value["productID"],Value["productName"],Value["productPrice"],Value["productStock"])
-                newInventory = inventory.add_product(loadProduct)
+            for Value in loadedinventory:
+                loadProduct = Products(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"])
+                newInventory.add_product(loadProduct)
             return newInventory
     except FileNotFoundError:
-        with open("inventoryList.txt", "w+") as file:
-            json.dump(inventory, file, indent=4)
-            return inventory()
+        with open("inventory.json", "w+") as file:
+            return newInventory
 
-def save_inventory():
+def save_inventory(inventoryvariable):
+    tempInventory = []
+    for items in inventoryvariable.viewinventory:
+        tempInventory.append(items.__dict__)
     with open("inventory.json", "w", encoding="utf-8") as file:
-        json.dump(inventory, file, indent=4, sort_keys=True)
+        json.dump(tempInventory, file, indent=4, sort_keys=True)
     print("Inventory save successfully.\n")
 
-def update_stock(inventory):
-        updateStockinput = input("Enter Product ID: ").upper()
-        for each in inventory:
-            each[]
-            print("Product Found.")
-            print("Name: " + inventory[updateStockinput]["productName"])
-            print("Current Stock: "+ str(inventory[updateStockinput]["productStock"]))
-            try:
-                newstockInput = int(input("New Stock Quantity: "))
-                inventory[updateStockinput]["productStock"] = newstockInput
-                return 
-            except ValueError:
-                print("Please enter an integer.")
-        else:
-            print("Product not found.")
+def update_stock(inventoryvariable):
+        productfound = productSearch(inventoryvariable)
+        if productfound != None:
+            while True:
+                try:
+                    newstockInput = int(input("New Stock Quantity: "))
+                    productfound.update_stock(newstockInput)
+                    return 
+                except ValueError:
+                    print("Please enter an integer.")
 
+def productSearch(inventoryvariable):
+    productSearchInput = input("Enter Product ID: ").upper()
+    productFound = inventoryvariable.search_product(productSearchInput)
+    if productFound != None:
+        print("Product Found.")
+        productFound.display_information()
+        return productFound
+    else:
+        print("Product Not Found")
 
 mainMenuBanner()
 inventoryObject = load_inventory()
@@ -135,21 +143,21 @@ while True:
             
         #Add Products
         case 2:
-            add_product()
+            add_product(inventoryObject)
         #update Stock
         case 3:
-            update_stock()
+            update_stock(inventoryObject)
         #Search Product
         case 4:
-            search_product()
+            productSearch(inventoryObject)
         #save inventory
         case 5:
             print("saving now...")
-            save_inventory()
+            save_inventory(inventoryObject)
         #quit
         case 6:
             print("Saving inventory before exiting...")
-            save_inventory()
+            save_inventory(inventoryObject)
             print("Thank you for using Inventory Management System.")
             print("Program Terminated.")
             break
