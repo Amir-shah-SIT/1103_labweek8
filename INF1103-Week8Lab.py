@@ -1,48 +1,19 @@
 import json
+from Inventory import inventory
+from ProductClass import PhysicalProduct,DigitalProduct
 #Where classes are declared
-class Products:
-    def __init__(self,product_id,name,price,stock):
-        self.__product_id = product_id
-        self.__name = name
-        self.__price = price
-        self.__stock = stock
-    
-    @property
-    def productID(self):
-        return self.__product_id
-    
-    def update_stock(self,quantity):
-        self.__stock = quantity
-
-    def display_information(self):
-        print("----------------------------------------")
-        print("Product ID:" + self.__product_id)
-        print("Product Name: " + self.__name)
-        print("Product Price: "+ str(self.__price))
-        print("Prodcut Stock: " + str(self.__stock))
-
-class inventory:
-    def __init__(self):
-        self.__TotalInventory = []
-
-    @property
-    def viewinventory(self):
-        return self.__TotalInventory
-    
-    def add_product(self,product):
-        self.__TotalInventory.append(product)
-        
-
-    def search_product(self,productid):
-        targetProduct = next((item for item in self.__TotalInventory if item.productID == productid), None)
-        return targetProduct
-
-    def display_all(self):
-        for each in self.__TotalInventory:
-            each.display_information()
 
 #Where functions are declared
 def add_product(inventoryvariable):
+    while True:
+        print("Product type?")
+        print("1.Physical")
+        print("2.Digital")  
+        try:
+            product_Type = int(input("Choose a Number:"))
+            break
+        except ValueError:
+            print("Invalid input")
     print("Add New Product")
     productIDinput = input("Product ID:").upper()
     productNameinput = input("Product Name: ")
@@ -58,9 +29,24 @@ def add_product(inventoryvariable):
             break
         except ValueError:
             print("Enter only a integer.")
-    newProduct = Products(productIDinput,productNameinput,productPriceinput,productStockinput)
-    inventoryvariable.add_product(newProduct)
+    match product_Type:
+        case 1:
+            while True:
+                try:
+                    product_Weight = int(input("Enter the weight of the product in KG: "))
+                    tempPhysical_product = PhysicalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,product_Weight)
+                    inventoryvariable.add_product(tempPhysical_product)
 
+                except ValueError:
+                    print("Enter only a integer.")
+        case 2:
+            while True:
+                try:
+                    Product_size = int(input("Enter the product size in MB: "))
+                    tempDigital_product = DigitalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,Product_size)
+                    inventoryvariable.add_product(tempDigital_product)
+                except ValueError:
+                    pass
     return
 
 def mainMenuBanner():
