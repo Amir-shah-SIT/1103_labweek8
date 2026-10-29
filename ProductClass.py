@@ -19,7 +19,7 @@ class Products:
         print("Product ID:" + self.__product_id)
         print("Product Name: " + self.__name)
         print("Product Price: "+ str(self.__price))
-        print("Prodcut Stock: " + str(self.__stock))
+        print("Product Stock: " + str(self.__stock))
 
 item1 = Products("P001","Baseball",99,50)
 print(item1.productID)
@@ -33,7 +33,18 @@ def display_information(self):
         print("Product ID:" + self.__product_id)
         print("Product Name: " + self.__name)
         print("Product Price: "+ str(self.__price))
-        print("Prodcut Stock: " + str(self.__stock))
+        print("Product Stock: " + str(self.__stock))
         print("Product Weight: " + str(self.__weight))
         
-        
+class DigitalProduct(Products):
+    def __init__(self, product_id, name, price, stock, downloadsize):
+        super().__init__(product_id, name, price, stock)
+        self.__download_size = downloadsize
+
+    def display_information(self):
+        print("----------------------------------------")
+        print("Product ID:" + self.__product_id)
+        print("Product Name: " + self.__name)
+        print("Product Price: "+ str(self.__price))
+        print("Produt Stock: " + str(self.__stock))
+        print("Product Download Size: " + str(self.__download_size))
