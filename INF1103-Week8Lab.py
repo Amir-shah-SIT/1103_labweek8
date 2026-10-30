@@ -81,10 +81,13 @@ def load_inventory():
             print("Inventory loaded successfully.")
             loadedinventory = json.load(file)
             for Value in loadedinventory:
-                loadProduct = Products(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"])
+                if "_PhysicalProduct__product_id" in Value:
+                    loadProduct = PhysicalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_PhysicalProduct__weight"])
+                else:
+                    loadProduct = DigitalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_DigitalProduct__download_size"])
                 newInventory.add_product(loadProduct)
             return newInventory
-    except FileNotFoundError:
+    except (json.JSONDecodeError,FileNotFoundError):
         with open("inventory.json", "w+") as file:
             return newInventory
 

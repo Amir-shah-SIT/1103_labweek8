@@ -1,6 +1,6 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
-class Products:
+class Products(ABC):
     def __init__(self,product_id,name,price,stock):
         self.__product_id = product_id
         self.__name = name
@@ -20,17 +20,29 @@ class Products:
         print("Product Name: " + self.__name)
         print("Product Price: "+ str(self.__price))
         print("Product Stock: " + str(self.__stock))
+    
+    @abstractmethod
+    def get_fulfilment_info():
+        pass
 
-item1 = Products("P001","Baseball",99,50)
-print(item1.productID)
+class canBeShippped(ABC):
+    @abstractmethod
+    def calculate_shipping_cost():
+        pass
 
-class PhysicalProduct(Products):
+class PhysicalProduct(Products,canBeShippped):
     def __init__(self,product_id,name,price,stock,weight):
         super().__init__(product_id,name,price,stock)
         self.__weight = weight
-def display_information(self):
+    def display_information(self):
         super().display_information()
-        print("Product Weight: " + str(self.__weight))
+        print("Product Weight: " + str(self.__weight)+"KG")
+    def get_fulfilment_info(self):
+        print("product requires physical shipping")
+        return "Physical"
+    def calculate_shipping_cost(self):
+        return 2.5 * self.__weight
+        
         
 class DigitalProduct(Products):
     def __init__(self, product_id, name, price, stock, downloadsize):
@@ -39,4 +51,18 @@ class DigitalProduct(Products):
 
     def display_information(self):
         super().display_information()
-        print("Product Download Size: " + str(self.__download_size))
+        print("Product Download Size: " + str(self.__download_size)+"MB")
+    def get_fulfilment_info(self):
+        print("product is delivered digitally")
+        return "Digital"
+
+        
+        
+        
+basketball = PhysicalProduct("P001","Basketball",99.99,21,21)
+basketball.display_information()
+basketball.get_fulfilment_info()
+
+windowskey = DigitalProduct("P002","Windows Key", 169.99, 50,0)
+windowskey.get_fulfilment_info()
+windowskey.display_information()
