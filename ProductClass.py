@@ -27,7 +27,7 @@ class Products(ABC):
 
 class canBeShippped(ABC):
     @abstractmethod
-    def calculate_shipping_cost():
+    def calculate_shipping_cost(self):
         pass
 
 class PhysicalProduct(Products,canBeShippped):

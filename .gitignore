@@ -1,0 +1,13 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+# Virtual environments
+.venv/
+venv/
+# Local environment variables
+.env
+dockerfile
+2601448-Week8Lab.zip
+# IDE settings
+.vscode/
+.idea/
