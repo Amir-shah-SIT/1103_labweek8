@@ -33,20 +33,22 @@ def add_product(inventoryvariable):
         case 1:
             while True:
                 try:
-                    product_Weight = int(input("Enter the weight of the product in KG: "))
+                    product_Weight = float(input("Enter the weight of the product in KG: "))
                     tempPhysical_product = PhysicalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,product_Weight)
                     inventoryvariable.add_product(tempPhysical_product)
+                    break
 
                 except ValueError:
-                    print("Enter only a integer.")
+                    print("Enter only a float.")
         case 2:
             while True:
                 try:
                     Product_size = int(input("Enter the product size in MB: "))
                     tempDigital_product = DigitalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,Product_size)
                     inventoryvariable.add_product(tempDigital_product)
+                    break
                 except ValueError:
-                    pass
+                    print("Enter only a integer.")
     return
 
 def mainMenuBanner():
@@ -81,7 +83,7 @@ def load_inventory():
             print("Inventory loaded successfully.")
             loadedinventory = json.load(file)
             for Value in loadedinventory:
-                if "_PhysicalProduct__product_id" in Value:
+                if "_PhysicalProduct__weight" in Value:
                     loadProduct = PhysicalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_PhysicalProduct__weight"])
                 else:
                     loadProduct = DigitalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_DigitalProduct__download_size"])
@@ -120,9 +122,9 @@ def productSearch(inventoryvariable):
     else:
         print("Product Not Found")
 
-mainMenuBanner()
 inventoryObject = load_inventory()
 while True:
+    mainMenuBanner()
     menuInput = mainMenuOptions()
     print("\n")
     match menuInput:

@@ -56,13 +56,3 @@ class DigitalProduct(Products):
         print("product is delivered digitally")
         return "Digital"
 
-        
-        
-        
-basketball = PhysicalProduct("P001","Basketball",99.99,21,21)
-basketball.display_information()
-basketball.get_fulfilment_info()
-
-windowskey = DigitalProduct("P002","Windows Key", 169.99, 50,0)
-windowskey.get_fulfilment_info()
-windowskey.display_information()

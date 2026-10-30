@@ -1,0 +1,16 @@
+[
+    {
+        "_PhysicalProduct__weight": 0.5,
+        "_Products__name": "Basketball",
+        "_Products__price": 67.99,
+        "_Products__product_id": "P001",
+        "_Products__stock": 99
+    },
+    {
+        "_DigitalProduct__download_size": 0,
+        "_Products__name": "Windows key",
+        "_Products__price": 169.99,
+        "_Products__product_id": "P002",
+        "_Products__stock": 21
+    }
+]

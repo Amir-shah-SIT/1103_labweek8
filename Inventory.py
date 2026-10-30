@@ -1,33 +1,22 @@
 from ProductClass import Products
-class inventory():
+class inventory:
     def __init__(self):
-        self.__TotalInvetory = []
+        self.__TotalInventory = []
 
+    @property
+    def viewinventory(self):
+        return self.__TotalInventory
+    
     def add_product(self,product):
-        self.__TotalInvetory.append(product)
+        self.__TotalInventory.append(product)
         
 
-    def search_produdct(self,product):
-        if product in self.__TotalInvetory:
-            product.display_information()
-        else:
-            print("No product exists")
+    def search_product(self,productid):
+        targetProduct = next((item for item in self.__TotalInventory if item.productID == productid), None)
+        return targetProduct
 
     def display_all(self):
-        for each in self.__TotalInvetory:
+        for each in self.__TotalInventory:
             each.display_information()
-
-item1 = Products("P001","Baseball",99,50)
-item2 = Products("P002","Basketball",99,67)
-
-
-maininventory= inventory()
-
-maininventory.add_product(item1)
-maininventory.add_product(item2)
-maininventory.search_produdct(item1)
-maininventory.search_produdct("test")
-
-maininventory.display_all()
 
 
