@@ -15,7 +15,6 @@ def add_product(inventoryvariable):
         except ValueError:
             print("Invalid input")
     print("Add New Product")
-    productIDinput = input("Product ID:").upper()
     productNameinput = input("Product Name: ")
     while True:
         try:
@@ -29,6 +28,8 @@ def add_product(inventoryvariable):
             break
         except ValueError:
             print("Enter only a integer.")
+    productIDinput = "P" +str(len(inventoryvariable.viewinventory) + 1).zfill(3)
+
     match product_Type:
         case 1:
             while True:
@@ -83,7 +84,8 @@ def load_inventory():
             print("Inventory loaded successfully.")
             loadedinventory = json.load(file)
             for Value in loadedinventory:
-                if "_PhysicalProduct__weight" in Value:
+                print(Value["_ProductType"])
+                if Value["_ProductType"] == "Physical":
                     loadProduct = PhysicalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_PhysicalProduct__weight"])
                 else:
                     loadProduct = DigitalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_DigitalProduct__download_size"])

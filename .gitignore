@@ -7,7 +7,7 @@ venv/
 # Local environment variables
 .env
 dockerfile
-
+ignorefolder/
 2601448-Week8Lab.zip
 # IDE settings
 .vscode/

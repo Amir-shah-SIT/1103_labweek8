@@ -1,6 +1,7 @@
 [
     {
         "_PhysicalProduct__weight": 0.5,
+        "_ProductType": "Physical",
         "_Products__name": "Basketball",
         "_Products__price": 67.99,
         "_Products__product_id": "P001",
@@ -8,9 +9,26 @@
     },
     {
         "_DigitalProduct__download_size": 0,
+        "_ProductType": "Digital",
         "_Products__name": "Windows key",
         "_Products__price": 169.99,
         "_Products__product_id": "P002",
         "_Products__stock": 21
+    },
+    {
+        "_PhysicalProduct__weight": 2.0,
+        "_ProductType": "Physical",
+        "_Products__name": "Hockey Stick",
+        "_Products__price": 50.0,
+        "_Products__product_id": "P003",
+        "_Products__stock": 21
+    },
+    {
+        "_PhysicalProduct__weight": 0.6,
+        "_ProductType": "Physical",
+        "_Products__name": "football",
+        "_Products__price": 67.67,
+        "_Products__product_id": "P004",
+        "_Products__stock": 55
     }
 ]
