@@ -1,4 +1,4 @@
-from ProductClass import Products
+from Classes.Parent import ProductClass
 class inventory:
     def __init__(self):
         self.__TotalInventory = []

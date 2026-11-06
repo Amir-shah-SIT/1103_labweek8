@@ -1,6 +1,8 @@
 import json
-from Inventory import inventory
-from ProductClass import PhysicalProduct,DigitalProduct
+from Classes.Inventory import inventory
+from Classes.Child.DigitalProductClass import DigitalProduct
+from Classes.Child.PhysicalProductClass import PhysicalProduct
+
 #Where classes are declared
 
 #Where functions are declared
@@ -79,7 +81,7 @@ def mainMenuOptions():
 def load_inventory():
     newInventory = inventory()
     try:
-        with open('inventory.json', 'r', encoding='utf-8') as file:
+        with open('Data/inventory.json', 'r', encoding='utf-8') as file:
             print("Inventory.json found.")
             print("Inventory loaded successfully.")
             loadedinventory = json.load(file)
@@ -92,14 +94,14 @@ def load_inventory():
                 newInventory.add_product(loadProduct)
             return newInventory
     except (json.JSONDecodeError,FileNotFoundError):
-        with open("inventory.json", "w+") as file:
+        with open("Data/inventory.json", "w+") as file:
             return newInventory
 
 def save_inventory(inventoryvariable):
     tempInventory = []
     for items in inventoryvariable.viewinventory:
         tempInventory.append(items.__dict__)
-    with open("inventory.json", "w", encoding="utf-8") as file:
+    with open("Data/inventory.json", "w", encoding="utf-8") as file:
         json.dump(tempInventory, file, indent=4, sort_keys=True)
     print("Inventory save successfully.\n")
 
