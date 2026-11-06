@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
+from Classes.SupplierClass import Supplier
 
 class Products(ABC):
-    def __init__(self,product_id,name,price,stock):
+    def __init__(self,product_id,name,price,stock,supplier:Supplier):
+        self.__supplier : Supplier = supplier
         self.__product_id = product_id
         self.__name = name
         self.__price = price

@@ -2,6 +2,8 @@ import json
 from Classes.Inventory import inventory
 from Classes.Child.DigitalProductClass import DigitalProduct
 from Classes.Child.PhysicalProductClass import PhysicalProduct
+from Classes.SupplierClass import Supplier
+from Classes.SupllierListClass import SupplierList
 
 #Where classes are declared
 
@@ -97,6 +99,22 @@ def load_inventory():
         with open("Data/inventory.json", "w+") as file:
             return newInventory
 
+def load_supplier():
+    supplier_list = SupplierList()
+    try:
+        with open('Data/inventory.json', 'r', encoding='utf-8') as file:
+            print("supplierlist.json found.")
+            print("supplier list loaded successfully.")
+            supplier_list = json.load(file)
+            for Value in supplier_list:
+
+                loadProduct = PhysicalProduct(Value["_Supplier__supplier_id"],Value["_Supplier__name"],Value["_Supplier__contact_email"])
+                supplier_list.add_supplier(loadProduct)
+            return supplier_list
+    except (json.JSONDecodeError,FileNotFoundError):
+        with open("Data/inventory.json", "w+") as file:
+            return supplier_list
+
 def save_inventory(inventoryvariable):
     tempInventory = []
     for items in inventoryvariable.viewinventory:
@@ -126,7 +144,37 @@ def productSearch(inventoryvariable):
     else:
         print("Product Not Found")
 
+def add_supplier():
+    while True:
+        supplier_name = input("Supplier Name: ")
+        supplier_id = input("Supplier ID: ")
+        supplier_email = input("Supplier Email: ")
+
+        print("Supplier Name: " + supplier_name)
+        print("Supplier ID: " + supplier_id)
+        print("Supplier Email: " + supplier_email)
+        print("Is that correct? ")
+        print("1.Yes")
+        print("2.No")
+        while True:
+            try:
+                
+                match int(input("1 or 2: ")):
+                    case 1:
+                        return Supplier(supplier_name,supplier_id,supplier_email)
+                    case 2:
+                        break
+                    case _:
+                        print("Only number between 1 or 2")
+            except ValueError:
+                print("only enter 1 or 2")
+
+
+        
+
+
 inventoryObject = load_inventory()
+Supplierlist = load_supplier()
 while True:
     mainMenuBanner()
     menuInput = mainMenuOptions()
