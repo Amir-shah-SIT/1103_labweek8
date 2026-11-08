@@ -88,6 +88,7 @@ def load_inventory():
     try:
         with open("data/inventory.pkl", "rb") as file:
             newinventory = pickle.load(file)
+            newinventory
             for each in newinventory.viewinventory:
                 if len(newsupplierlist.supplier_list) == 0:
                     newsupplierlist.add_supplier(each.supplier)
@@ -118,7 +119,7 @@ def update_stock(inventoryvariable):
 
 def productSearch(inventoryvariable):
     productSearchInput = input("Enter Product ID: ").upper()
-    productFound:Products = inventoryvariable.search_product(productSearchInput)
+    productFound:Product = inventoryvariable.search_product(productSearchInput)
     if productFound != None:
         print("Product Found.")
         show_product_details(productFound)
@@ -131,8 +132,6 @@ def add_supplier(supplierlist:SupplierList):
         supplier_id = "S" +str(len(supplierlist.supplier_list) + 1).zfill(3)
         supplier_name = input("Supplier Name: ")
         supplier_email = input("Supplier Email: ")
-        print("Supplier Name: " + supplier_name)
-        print("Supplier Email: " + supplier_email)
         print("Is that correct? ")
         print("1.Yes")
         print("2.No")

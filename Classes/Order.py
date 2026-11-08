@@ -8,12 +8,17 @@ class Order:
     def add_order_line(self,product:Product, quantity:int) -> None:
         order_line = OrderLine(product,quantity)
         self.order_lines.append(order_line)
-    
+    def display_all(self) -> None:
+        for each in self.order_lines:
+            each.showorderline()
     def calculate_total(self) -> int:
         total = 0
         for each in self.order_lines:
             total += each.calculate_subtotal()
-        
         return total
-    
+    def remove_order(self,item):
+        for each in self.order_lines:
+            if item == each.returnitem:
+                self.order_lines.remove(each)
+        
 
