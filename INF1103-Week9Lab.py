@@ -1,14 +1,16 @@
-import json
 from Classes.Inventory import inventory
 from Classes.Child.DigitalProductClass import DigitalProduct
 from Classes.Child.PhysicalProductClass import PhysicalProduct
+from Classes.Parent.ProductClass import Product
 from Classes.SupplierClass import Supplier
 from Classes.SupllierListClass import SupplierList
+import pickle
 
 #Where classes are declared
 
 #Where functions are declared
-def add_product(inventoryvariable):
+def add_product(inventoryvariable,suppliervariable):
+    chosen_supplier = choose_supplier(suppliervariable)
     while True:
         print("Product type?")
         print("1.Physical")
@@ -39,7 +41,7 @@ def add_product(inventoryvariable):
             while True:
                 try:
                     product_Weight = float(input("Enter the weight of the product in KG: "))
-                    tempPhysical_product = PhysicalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,product_Weight)
+                    tempPhysical_product = PhysicalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,chosen_supplier,product_Weight)
                     inventoryvariable.add_product(tempPhysical_product)
                     break
 
@@ -49,7 +51,7 @@ def add_product(inventoryvariable):
             while True:
                 try:
                     Product_size = int(input("Enter the product size in MB: "))
-                    tempDigital_product = DigitalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,Product_size)
+                    tempDigital_product = DigitalProduct(productIDinput,productNameinput,productPriceinput,productStockinput,chosen_supplier,Product_size)
                     inventoryvariable.add_product(tempDigital_product)
                     break
                 except ValueError:
@@ -67,61 +69,41 @@ def mainMenuOptions():
     print("2. Add Products")
     print("3. Update Stock")
     print("4. Search Product")
-    print("5. Save Inventory")
-    print("6. Exit")
+    print("5. Add supplier")
+    print("6. Save Inventory")
+    print("7. Exit")
     print("------------------------\n")
     while True:
         try:
             mainMenuInput = int(input("Enter Option: "))
-            if mainMenuInput > 0 and mainMenuInput < 7:
+            if mainMenuInput > 0 and mainMenuInput < 8:
                 return mainMenuInput
             else:
-                print("please only enter a number between 1-6.")
+                print("please only enter a number between 1-7.")
         except ValueError:
-            print("please only enter a number between 1-6.")
+            print("please only enter a number between 1-7.")
 
 def load_inventory():
-    newInventory = inventory()
+    newsupplierlist = SupplierList()
     try:
-        with open('Data/inventory.json', 'r', encoding='utf-8') as file:
-            print("Inventory.json found.")
-            print("Inventory loaded successfully.")
-            loadedinventory = json.load(file)
-            for Value in loadedinventory:
-                print(Value["_ProductType"])
-                if Value["_ProductType"] == "Physical":
-                    loadProduct = PhysicalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_PhysicalProduct__weight"])
-                else:
-                    loadProduct = DigitalProduct(Value["_Products__product_id"],Value["_Products__name"],Value["_Products__price"],Value["_Products__stock"],Value["_DigitalProduct__download_size"])
-                newInventory.add_product(loadProduct)
-            return newInventory
-    except (json.JSONDecodeError,FileNotFoundError):
-        with open("Data/inventory.json", "w+") as file:
-            return newInventory
+        with open("data/inventory.pkl", "rb") as file:
+            newinventory = pickle.load(file)
+            for each in newinventory.viewinventory:
+                if len(newsupplierlist.supplier_list) == 0:
+                    newsupplierlist.add_supplier(each.supplier)
 
-def load_supplier():
-    supplier_list = SupplierList()
-    try:
-        with open('Data/inventory.json', 'r', encoding='utf-8') as file:
-            print("supplierlist.json found.")
-            print("supplier list loaded successfully.")
-            supplier_list = json.load(file)
-            for Value in supplier_list:
-
-                loadProduct = PhysicalProduct(Value["_Supplier__supplier_id"],Value["_Supplier__name"],Value["_Supplier__contact_email"])
-                supplier_list.add_supplier(loadProduct)
-            return supplier_list
-    except (json.JSONDecodeError,FileNotFoundError):
-        with open("Data/inventory.json", "w+") as file:
-            return supplier_list
+                for supplier in newsupplierlist.supplier_list:
+                    if each.supplier.supplier_name != supplier.supplier_name:
+                        newsupplierlist.add_supplier(each.supplier)
+            return newinventory, newsupplierlist
+    except (EOFError, FileNotFoundError):
+        with open("Data/inventory.pkl", "w+") as file:
+            return inventory(),SupplierList()
 
 def save_inventory(inventoryvariable):
-    tempInventory = []
-    for items in inventoryvariable.viewinventory:
-        tempInventory.append(items.__dict__)
-    with open("Data/inventory.json", "w", encoding="utf-8") as file:
-        json.dump(tempInventory, file, indent=4, sort_keys=True)
-    print("Inventory save successfully.\n")
+    with open("data/inventory.pkl", "wb") as file:
+        pickle.dump(inventoryvariable, file)
+        print("Inventory save successfully.\n")
 
 def update_stock(inventoryvariable):
         productfound = productSearch(inventoryvariable)
@@ -136,22 +118,20 @@ def update_stock(inventoryvariable):
 
 def productSearch(inventoryvariable):
     productSearchInput = input("Enter Product ID: ").upper()
-    productFound = inventoryvariable.search_product(productSearchInput)
+    productFound:Products = inventoryvariable.search_product(productSearchInput)
     if productFound != None:
         print("Product Found.")
-        productFound.display_information()
+        show_product_details(productFound)
         return productFound
     else:
         print("Product Not Found")
 
-def add_supplier():
+def add_supplier(supplierlist:SupplierList):
     while True:
+        supplier_id = "S" +str(len(supplierlist.supplier_list) + 1).zfill(3)
         supplier_name = input("Supplier Name: ")
-        supplier_id = input("Supplier ID: ")
         supplier_email = input("Supplier Email: ")
-
         print("Supplier Name: " + supplier_name)
-        print("Supplier ID: " + supplier_id)
         print("Supplier Email: " + supplier_email)
         print("Is that correct? ")
         print("1.Yes")
@@ -161,20 +141,41 @@ def add_supplier():
                 
                 match int(input("1 or 2: ")):
                     case 1:
-                        return Supplier(supplier_name,supplier_id,supplier_email)
+                        new_supplier = Supplier(supplier_id,supplier_name,supplier_email)
+                        supplierlist.add_supplier(new_supplier)
+                        return new_supplier
                     case 2:
                         break
                     case _:
-                        print("Only number between 1 or 2")
+                        print("Only enter 1 or 2")
             except ValueError:
                 print("only enter 1 or 2")
 
+def choose_supplier(supplierlist:SupplierList):
+    suppliers = supplierlist.supplier_list
+    for index,each in enumerate(suppliers):
+        print(str(index+1) + ". "+each.supplier_name)
+    print(str(len(suppliers)+1) + ". Create new supplier")
+    while True:
+        try:
+            choose_supplier_input = int(input("Choose an option: "))
+            if choose_supplier_input == len(suppliers) + 1:
+                newsupplier = add_supplier(supplierlist)
+                return newsupplier
+            else:
+                try:
+                    chosensupplier = suppliers[choose_supplier_input - 1]
+                    return chosensupplier
+                except IndexError:
+                    ("that option does not exist")
+        except ValueError:
+            print("Please enter a number")        
 
-        
+def show_product_details(product: Product) -> None:
+    product.display_information()
+    print(product.get_fulfilment_info())
 
-
-inventoryObject = load_inventory()
-Supplierlist = load_supplier()
+inventoryObject, supplierlistobject = load_inventory()
 while True:
     mainMenuBanner()
     menuInput = mainMenuOptions()
@@ -186,7 +187,7 @@ while True:
             
         #Add Products
         case 2:
-            add_product(inventoryObject)
+            add_product(inventoryObject,supplierlistobject)
         #update Stock
         case 3:
             update_stock(inventoryObject)
@@ -194,11 +195,13 @@ while True:
         case 4:
             productSearch(inventoryObject)
         #save inventory
-        case 5:
+        case 5: 
+            add_supplier(supplierlistobject)
+        case 6:
             print("saving now...")
             save_inventory(inventoryObject)
         #quit
-        case 6:
+        case 7:
             print("Saving inventory before exiting...")
             save_inventory(inventoryObject)
             print("Thank you for using Inventory Management System.")
